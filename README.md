@@ -555,9 +555,21 @@ This is a powerful concept, because with a very small amount threads we can proc
 
 This feature is one of the major selling points of [Node.js](https://nodejs.org/en/) and the reason why even using a single thread it can be used to develop backend applications.
 
-Likewise this is the reason for the proliferation of frameworks like [Netty](http://netty.io), [RxJava](https://github.com/ReactiveX/RxJava), [Reactive Streams Initiative](http://www.reactive-streams.org) and the [Project Reactor](https://projectreactor.io). They all are seeking to promote this type of optimization and programming model.
+Likewise this is the reason for the proliferation of frameworks like:
 
-There is also an interesting movement of new frameworks that leverage this powerful features and are trying to compete or complement one another. I'm talking of interesting projects like [Vert.x](http://vertx.io) and [Ratpack](https://ratpack.io). And I'm pretty sure there are many more out there for other languages.
+* [Netty](http://netty.io)
+* [Reactive Streams Initiative](http://www.reactive-streams.org) 
+* [RxJava](https://github.com/ReactiveX/RxJava)
+* [Project Reactor](https://projectreactor.io) 
+
+They all are seeking to promote this type of optimization and programming model.
+
+There is also an interesting movement of new frameworks that leverage this powerful features and are trying to compete or complement one another. I'm talking of interesting projects like:
+
+* [Vert.x](http://vertx.io) and 
+* [Ratpack](https://ratpack.io) 
+
+And I'm pretty sure there are many more out there for other languages.
 
 ### Java Reactive Types
 
