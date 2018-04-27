@@ -1,3 +1,28 @@
+# Table of Contents
+
+- [Learning Reactive Programming](#learning-reactive-programming)
+  * [Asynchronous Programming](#asynchronous-programming)
+    + [Continuation Passing Style (CPS)](#continuation-passing-style--cps-)
+    + [Synchronous vs Asynchronous Code](#synchronous-vs-asynchronous-code)
+    + [Error Handling in CPS](#error-handling-in-cps)
+    + [Callbacks Problems](#callbacks-problems)
+    + [Promises](#promises)
+    + [Promisify a CPS Function](#promisify-a-cps-function)
+    + [Error Handling with Promises](#error-handling-with-promises)
+    + [Promises Beget Promises/Promise Chaining](#promises-beget-promises-promise-chaining)
+    + [Async/Await vs Promises](#async-await-vs-promises)
+    + [Error Handling with Async/Await](#error-handling-with-async-await)
+    + [Non-Blocking I/O](#non-blocking-i-o)
+    + [Java Reactive Types](#java-reactive-types)
+    + [Other Reactive Types](#other-reactive-types)
+    + [Using WireMock to Simulate HTTP Services](#using-wiremock-to-simulate-http-services)
+    + [Using `curl` to Test Web Services](#using--curl--to-test-web-services)
+    + [Other Useful Command Line Tools and Shortcuts](#other-useful-command-line-tools-and-shortcuts)
+    + [Useful Tools](#useful-tools)
+    + [Recommended Books](#recommended-books)
+    + [Recommended Videos](#recommended-videos)
+    + [Further Reference](#further-reference)
+
 # Learning Reactive Programming
 
 This project is a sandbox that I use to learn and practice reactive programming concepts.
@@ -675,7 +700,7 @@ getDayOfWeek1(0).handle((day, error) -> {
 }).thenAccept(System.out::println); //yiels "The days is unknown"
 ```
 
-## Other Reactive Types
+### Other Reactive Types
 
 TBD
 
