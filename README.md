@@ -30,7 +30,7 @@ id(12345, console.log); //prints 12345 to the main output
 
 We can take any function written in "direct style" and replace it by a function written in CPS. All we have to do is replace any return statements with a callback call.
 
-For exaple, if we had the following factorial function:
+For example, if we had the following factorial function:
 
 ```javascript
 function fact0(n) {
@@ -74,7 +74,7 @@ reverse('hello', console.log);
 console.log('end of program');
 ```
 
-The code above yields the ouput:
+The code above yields the output:
 
 ```
 olleh
@@ -120,7 +120,7 @@ Notice that this function is asynchronous, but Node.js is still single-threaded.
 
 Now the fundamental question here is whether `isPalindrome` suffers any modifications or if it will continue to work after we did such fundamental change in the nature of our `reverse` function. 
 
-Our `isPalindrome` function will conitnue to work just fine without any modifications, it is just that now, it is also asynchronous.
+Our `isPalindrome` function will continue to work just fine without any modifications, it is just that now, it is also asynchronous.
 
 ```javascript
 isPalindrome("racecar", console.log);
@@ -134,7 +134,7 @@ end of program
 racecar
 ```
 
-This is, perhaps, one of the key characterstics of CPS, the power to go from synchronous to asynchrnous without having to make any changes in the code.
+This is, perhaps, one of the key characteristics of CPS, the power to go from synchronous to asynchronous without having to make any changes in the code.
 
 So, the key tenets for me, so far, are:
 
@@ -212,7 +212,7 @@ Callbacks have two major problems:
 
 **Nested call stack**: if the code is synchronous, and the language does not support tail call optimizations, then every continuation adds to the call stack leading to a potential stack overflow error.
 
-For example, Node.js v9.11.1 (the version I'm using for these examples) doest not support tail call optimizations. So even the following function written in tail recursive way causes a stack overflow error:
+For example, Node.js v9.11.1 (the version I'm using for these examples) does not support tail call optimizations. So even the following function written in tail recursive way causes a stack overflow error:
 
 ```javascript
 function fact(n, ret) {
@@ -266,7 +266,7 @@ function pythagoras(x, y, ret) {
 pythagoras(3, 4, console.log);
 ```
 
-There are a [few ways to organize](http://callbackhell.com) our code when using CPS such that we keep callback hell under control and there are interesting libraries (like [async.js](https://caolan.github.io/async/) that can help us write better code, but in general there's not easy way to dudge this bullet. 
+There are a [few ways to organize](http://callbackhell.com) our code when using CPS such that we keep callback hell under control and there are interesting libraries (like [async.js](https://caolan.github.io/async/) that can help us write better code, but in general there's not easy way to dodge this bullet. 
 
 Alternatively, these days it has been customary to replace callbacks with promises.
 
@@ -357,7 +357,7 @@ readFile('fruits.txt')
 
 ### Async/Await vs Promises
 
-Although promises are a very elegant solution that reduce some of complexity of writing code in CPS, the truth is that they still make use of callbacks to handle state changes. In certain cases, even with promises, the code looks a bit cumbersome, like our pythagorean function below, implemented using promises:
+Although promises are a very elegant solution that reduce some of complexity of writing code in CPS, the truth is that they still make use of callbacks to handle state changes. In certain cases, even with promises, the code looks a bit cumbersome, like our Pythagorean function below, implemented using promises:
 
 ```javascript
 function pythagoras(x, y) {
@@ -365,7 +365,7 @@ function pythagoras(x, y) {
 }
 ```
 
-More rencently, a number of programming languages have introduced support for two new keywords known as `async` and `await`. In JavaScript the `async` keyword allows us to create a promise out some apparently direct style code:
+More recently, a number of programming languages have introduced support for two new keywords known as `async` and `await`. In JavaScript the `async` keyword allows us to create a promise out some apparently direct style code:
 
 ```javascript
 async function multiply(x, y) {
@@ -387,7 +387,7 @@ async function square(x) {
 }
 ```
 
-Another charactersitics of an `async` function is that inside its body we can call any other async functions and subscribe to their callbacks in what appears to be direct style programming using the `await` keyword:
+Another characteristics of an `async` function is that inside its body we can call any other async functions and subscribe to their callbacks in what appears to be direct style programming using the `await` keyword:
 
 ```javascript
 async function pythagoras(x, y) {
@@ -415,7 +415,7 @@ async function getFruits() {
 }
 ```
 
-The catch is just syntactic suggar for subscribing to the error callback in the promise, but under the hood this is still the same program as before. The whole thing still uses promises.
+The catch is just syntactic sugar for subscribing to the error callback in the promise, but under the hood this is still the same program as before. The whole thing still uses promises.
 
 ```javascript
 getFruits().then(fruits => fruits.map(reverse))
@@ -442,7 +442,7 @@ TBD: CompletableFuture/RxJava(Observable/Single/Maybe)/Reactor(Mono/Flux).
 * Ratpack uses promises.
 * Spring uses reactive streams.
 
-### Using WireMock to Simmulate HTTP Services
+### Using WireMock to Simulate HTTP Services
 
 TBD
 
@@ -477,7 +477,7 @@ curl -i -X POST http://localhost:8080/customer -H "Content-Type:application/xml"
 * `-d`  `--data`     specifies the body of the request, if preceded with @ represents a payload file.
 * `-s`  `--silent`   don't show progress meter or error message. Just the output of the service.
 
-If we're getting JSON back and it is not pretty-prited, we can format it by using a command-line program like [Jq](https://stedolan.github.io/jq/), which is a command-line tool to manipulate and format JSON.
+If we're getting JSON back and it is not pretty-printed, we can format it by using a command-line program like [Jq](https://stedolan.github.io/jq/), which is a command-line tool to manipulate and format JSON.
 
 ```text
 curl -s -H "Accept:application/json" -X GET http://localhost:8080/order/12345 | jq
