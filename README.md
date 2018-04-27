@@ -630,7 +630,7 @@ pythagoras(3,4).thenAccept(System.out::println); //yields 25
 
 Our code could become asynchronous if we run any of the tasks in a separete thread:
 
-```
+```java
 CompletableFuture<Integer> multiply(int x, int y) {
     return CompletableFuture.supplyAsync(() -> x * y);
 }
