@@ -646,6 +646,34 @@ Thread.sleep(1000);
 
 The `Thread.sleep(1000)` at the end is just to avoid that our program ends before completing the promise, since if a Java program ends it does not wait by default for any pending futures to complete.
 
+And of course, we also have a way to make the promise report any errors occurred during the operation of the function:
+
+```java
+private static CompletableFuture<String> getDayOfWeek1(int day) {
+    String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"};
+
+    CompletableFuture<String> promise = new CompletableFuture<>();
+    if (day >= 1 && day <= 7) {
+        promise.complete(days[day - 1]);
+    } else {
+        promise.completeExceptionally(new IllegalArgumentException("Invalid day of the week: " + day));
+    }
+
+    return promise;
+}
+```
+
+And our client could simply do:
+
+```java
+getDayOfWeek1(0).handle((day, error) -> {
+    if(error != null) {
+        return "The day is unknown";
+    }
+    return day;
+}).thenAccept(System.out::println); //yiels "The days is unknown"
+```
 
 ## Other Reactive Types
 
