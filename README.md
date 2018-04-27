@@ -566,17 +566,90 @@ They all are seeking to promote this type of optimization and programming model.
 
 There is also an interesting movement of new frameworks that leverage this powerful features and are trying to compete or complement one another. I'm talking of interesting projects like:
 
-* [Vert.x](http://vertx.io) and 
+* [Vert.x](http://vertx.io)
 * [Ratpack](https://ratpack.io) 
 
-And I'm pretty sure there are many more out there for other languages.
+I'm pretty sure there must be many more out there for other languages.
 
 ### Java Reactive Types
 
-TBD: CompletableFuture/RxJava(Observable/Single/Maybe)/Reactor(Mono/Flux).
+In Java, the closes type we have to a promise is `CompletableFuture`, with it we can implement a similar behavior to what we have done so far:
 
 ```java
+//direct style
+String reverse0(String word) {
+    return new StringBuilder(word).reverse().toString();
+}
+
+//continuation passing style
+void reverse1(String word, Consumer<String> ret) {
+    ret.accept(new StringBuilder(word).reverse().toString());
+}
+
+//promise style
+CompletableFuture<String> reverse2(String word) {
+    return CompletableFuture.completedFuture(new StringBuilder(word).reverse().toString());
+}
 ```
+
+All these examples are completly synchronous and the steps below run in the exact order they are programmed.
+
+```java
+System.out.println(reverse0("hello"));
+reverse1("hello", System.out::println);
+reverse2("hello").thenAccept(System.out::println);
+```
+
+We could also implement our Pythagorean example from before:
+
+```java
+CompletableFuture<Integer> add(int x, int y) {
+    return CompletableFuture.completedFuture(x + y);
+}
+
+CompletableFuture<Integer> multiply(int x, int y) {
+    return CompletableFuture.completedFuture(x * y);
+}
+
+CompletableFuture<Integer> square(int x) {
+    return multiply(x, x);
+}
+
+CompletableFuture<Integer> pythagoras(int x, int y) {
+    return square(x).thenCompose(squareOfx -> 
+        square(y).thenCompose(squareOfy -> add(squareOfx, squareOfy))
+    );
+}
+```
+
+And our client would simply do:
+
+```java
+pythagoras(3,4).thenAccept(System.out::println); //yields 25
+```
+
+Our code could become asynchronous if we run any of the tasks in a separete thread:
+
+```
+CompletableFuture<Integer> multiply(int x, int y) {
+    return CompletableFuture.supplyAsync(() -> x * y);
+}
+```
+
+Then our client would do:
+
+```java
+pythagoras(3,4).thenAccept(System.out::println); //yields 25
+System.out.println("End of Program");
+Thread.sleep(1000);
+```
+
+The `Thread.sleep(1000)` at the end is just to avoid that our program ends before completing the promise, since if a Java program ends it does not wait by default for any pending futures to complete.
+
+
+## Other Reactive Types
+
+TBD
 
 * Netty uses promises.
 * Vert.x uses callbacks.
