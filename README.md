@@ -140,9 +140,9 @@ So, the key tenets for me, so far, are:
 
 * I can write any function in CPS.
 * A function written in CPS is not by default asynchronous.
+* A function written in CPS is compatible with syncrhonous and asynchronous functions.
 * A function written in CPS causes all its callers to be written in CPS.
 * A function written in CPS is compatible with asynchronous execution.
-
 
 ### Error Handling in CPS
 
