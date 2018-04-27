@@ -12,7 +12,7 @@ Perhaps the best explanation I have found so far on this topic is from [@mattmig
 
 I'm going to reproduce some of his examples here to reiterate my understanding while I try to build my own knowledge on top of his ideas and examples:
 
-Continuation Passing Style is way of writing code using only void functions. Instead of using a `return` statement we use a callback to provide the result to the caller.
+Continuation Passing Style is a way of writing code using only void functions. Instead of using a `return` statement we use a callback to provide the results back to the caller.
 
 Consider the following identity function, where we replace the `return` statement for a callback which for convenience we call `ret`.
 
@@ -61,7 +61,7 @@ fact(5, console.log); //prints 120 to main output
 
 ### Synchronous vs Asynchronous Code
 
-Just by writing a function in CPS it does not become asynchronous. A function written in CPS is as synchronous as thier direct-style counterparts. Asynchrony is entirely separate attribute of our programs.
+Just by writing a function in CPS it does not become asynchronous. A function written in CPS is as synchronous as thier direct-style counterparts. Asynchrony is an entirely separate attribute of our programs.
 
 To demonstrate that consider the following `reverse` function:
 
@@ -94,7 +94,7 @@ isPalindrome("racecar", console.log); //yields "racecar"
 isPalindrome("tomorrow", console.log); //yields null
 ```
 
-This second function must use CPS too, since the `reverse` function uses CPS, and once a function uses CPS, all of its users are forced to deal with the callback and turn themselves into CPS functions as well.
+This second function must use CPS too, since the `reverse` function uses CPS. It looks like once a function uses CPS, all of its users are forced to deal with the callback and turn themselves into CPS functions as well.
 
 Now, what will happen if we made the `reverse` function truly asynchronous? Consider the following change:
 
@@ -116,9 +116,9 @@ olleh
 
 Clearly, the order of the operations is no longer synchronous. The `setTimeout` function has made our `reverse` function asynchronous.
 
-Notice that this function is asynchronous, but Node.js is still single-threaded. Which demonstrates that asynchrony does not need multiple threads to be implemented. A event-loop where we can schedule work for later execution should suffice as in this case.
+Notice that this function is asynchronous, but Node.js is still single-threaded. Which demonstrates that asynchrony does not need multiple threads to be implemented. An event-loop (where we can schedule work for later execution) should suffice as in this case.
 
-Now the fundamental question here is whether `isPalindrome` suffers any modifications or if it will continue to work after we did such fundamental change in the nature of our `reverse` function. 
+Now the fundamental question here is whether `isPalindrome` need suffer any modifications after we changed `reverse` to be asynchronous, or whether it will continue to work after we did such fundamental change in the nature of our `reverse` function. 
 
 Our `isPalindrome` function will continue to work just fine without any modifications, it is just that now, it is also asynchronous.
 
@@ -146,7 +146,7 @@ So, the key tenets for me, so far, are:
 
 ### Error Handling in CPS
 
-In direct style we are used to using try-catch-finally blocks to control the flow of the program in the case of program.
+In direct style we are used to using try-catch-finally blocks to control the flow of the program in the case of errors or exceptional conditions.
 
 Consider the following example of a function that gives us the name of the day of the week:
 
@@ -203,7 +203,7 @@ Something worth mentioning is that once written in CPS, the clients of the funct
 
 This raises an interesting question: how to deal with input validation, e.g. in the case of e.g. `ret` or `thro` are null or invalid arguments?
 
-Of course passing that passing invalid callback arguments could be considered a programming mistake, a bug in our code. There is no escape but to throw those back in direct style.
+Of course passing that passing invalid callback arguments could be considered a programming mistake, a bug in our code. There is no escape but to throw those back in direct style. But it is still worth considering how our programs will behave if we mistakenly introduce direct style exception propagation in our CPS written programs.
 
 
 ### Callbacks Problems
@@ -229,7 +229,7 @@ function fact(n, ret) {
 fact(15000, console.log); //stackoverflow
 ```
 
-A typically solution to this problem would be to actually make the function to work asynchronously, since that way the function would complete and relinquish the call stack. For, we could make the function above become asynchronous my making the `multiply` function asynchronous:
+A typically solution to this problem would be to actually make the function work asynchronously, that way the it would complete immediately and relinquish the call stack. For example, we could make the function above become asynchronous my making the `multiply` function asynchronous:
 
 ```javascript
 function multiply(x, y, ret) {
@@ -240,7 +240,7 @@ function multiply(x, y, ret) {
 The invocation to `fact(15000, console.log)` would take a while to complete, and would yield an `Infinity` result since the result is beyond the supported arithmetic boundaries of JavaScript, but it would not cause a stackoverflow.
 
 
-**Callback hell**: it is a real pain to write nested function. The code becomes harder to read, to follow, to reason about and to maintain.
+**Callback hell**: it is a real pain to write nested functions. The code becomes harder to read, to follow, to reason about and to maintain.
 
 ```javascript
 function multiply(x, y, ret) {
@@ -266,9 +266,9 @@ function pythagoras(x, y, ret) {
 pythagoras(3, 4, console.log);
 ```
 
-There are a [few ways to organize](http://callbackhell.com) our code when using CPS such that we keep callback hell under control and there are interesting libraries (like [async.js](https://caolan.github.io/async/) that can help us write better code, but in general there's not easy way to dodge this bullet. 
+There are a [few ways to organize](http://callbackhell.com) our code when using CPS such that we keep callback hell under control and there are interesting libraries (like [async.js](https://caolan.github.io/async/)) that can help us write better code, but in general there's not easy way to dodge this bullet. 
 
-Alternatively, these days it has been customary to replace callbacks with promises.
+Alternatively, these days it is customary to replace callbacks with promises.
 
 ### Promises
 
@@ -280,7 +280,7 @@ A promise is just an object that is returned by function instead of the actual r
 * If a result is available, the Promise is _fulfilled_.
 * If an error happened, the Promise is _rejected_.
 
-We can register callbacks to react to promise state changes and to get the result when it is ready or an exception or error when the function fails for any reason.
+We can register callbacks to react to promise state changes. The callback can provide the result of the function when the promise is resolved or provides an error when the promise has been rejected.
 
 ```javascript
 function reverse(word) {
@@ -377,7 +377,7 @@ async function add(x, y) {
 }
 ```
 
-So, the functions `multiply` and `add` above, actually return a promise.
+So, the functions `multiply` and `add` above, actually return promises.
 
 We can also use `await` with functions that already return promises:
 
@@ -397,7 +397,7 @@ async function pythagoras(x, y) {
 }
 ```
 
-The code above is equivalent to our previous example in which we used promises, but the `await` keyword seems to imply this code is in direct style, when in fact it is just syntactic sugar for asynchronous, promised-based code. The `await` keyword is just syntactic sugar for subscribing a `then` callback in the promise.
+The code above is equivalent to our previous example in which we used promises, but the `await` keyword seems to imply this code is in direct style, when in fact it is just syntactic sugar for asynchronous, promised-based code. The `await` keyword is just syntactic sugar for subscribing to the `then` callback in the promise.
 
 ### Error Handling with Async/Await
 
@@ -527,7 +527,7 @@ jshell> Runtime.getRuntime().availableProcessors();
 * [WireMock](http://wiremock.org/docs/running-standalone/)
 * [Jq](https://stedolan.github.io/jq/)
 * [Xmllint](http://xmlsoft.org/xmllint.html)
-* [JMeter](http4s://jmeter.apache.org/)
+* [JMeter](https://jmeter.apache.org/)
 * [Continuation Passing Style in JavaScript](http://matt.might.net/articles/by-example-continuation-passing-style/)
 * [Async/Await in JavaScript](http://matt.might.net/articles/by-example-continuation-passing-style/)
 * [Understanding Reactive Types](https://spring.io/blog/2016/04/19/understanding-reactive-types)
