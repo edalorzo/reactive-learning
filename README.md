@@ -423,12 +423,141 @@ getFruits().then(fruits => fruits.map(reverse))
     .then(reversed  => reversed.forEach(word => console.log(word)));
 ```
 
-### Blocking vs Non-Blocking I/O
+### Non-Blocking I/O
 
-TBD: http/fs operations. Understanding of the event loop.
+All this knowledge becomes relevant when we realize that in the moment that we need to do some I/O operation, like reading file or making an HTTP request, we want to avoid blocking our current thread of execution and in Node.js and JavaScript this is of paramount importance since the entire environment is single-threaded.
+
+It is interesting because the operating system already works in a non-blocking way. It is our programming languages that were modeled in a blocking manner.
+
+As an example, imagine that you had a computer with a single CPU. Any I/O operation that you do will be orders of magnitude slower than the CPU, right?. Say you want to read a file or do an HTTP request. Do you think the CPU will stay there, idle, doing nothing while the disk head goes and fetches a few bytes and puts them in the disk buffer or while the some arrive through the network interface? Obviously not. The operating system will register an interruption (i.e. a callback) and will use its valuable, single CPU for something else in the mean time. When the disk head has managed to read a few bytes and made them available to be consumed, an interruption will be triggered and the OS will then give attention to it, restore the previous process block and allocate some CPU time to handle the available data.
+
+So, in this case, the CPU is like a thread in your application. It is never blocked. It is always doing some CPU-bound stuff.
+
+The idea behind NIO programming is the same. In the example below, our Node.js application runs in a single thread, and it makes an HTTP request to get some fruits data. Immediately after we place the request our valuable single thread is released to attend other tasks, while we wait for some callback to be resolved.  In our example below, while we're waiting for the data to arrive, Node.js uses its single thread to do some other work, represented by the interval function that we schedule.
+
+When the callback resolves, it will be automatically scheduled to be processed by your single thread.
+
+As such, that thread works as an event loop, one in which we're supposed to schedule only CPU bound stuff. Every time we need to do I/O, that's done in a non-blocking way and when that I/O is complete, some CPU-bound callback is put into the event loop to deal with the response.
+
+**The Callback Way**
 
 ```javascript
+const http = require('http');
+
+function getFruits(ret, thro) {
+
+    const options = {
+        hostname: '127.0.0.1',
+        port: 4040,
+        path: '/fruits'
+    };
+
+    // Make a request
+    const req = http.request(options);
+    req.setHeader('Accept','application/json');
+    req.end(); //flushes the request
+
+    req.on('response', (res) => {
+
+        let payload = "";
+       
+        res.on('data', data => payload += data.toString('utf-8'));
+        res.on('end', () => ret (JSON.parse(payload)));
+        
+    });
+
+    req.on('error', error => thro (error));
+}
+
+getFruits(console.log, console.log);
+
+let count = 0;
+const interval = setInterval(() => {
+    count++;
+    if(count > 5) {
+        return clearInterval(interval);
+    }
+    console.log("I'm still alive and kicking!!!");
+}, 1000);
+
+console.log("End of Program");
 ```
+
+**The Promise Way**
+
+```javascript
+const http = require('http');
+
+function getFruits() {
+
+    return new Promise((resolve,reject) => {
+
+        const options = {
+            hostname: '127.0.0.1',
+            port: 4040,
+            path: '/fruits'
+        };
+
+        // Make a request
+        const req = http.request(options);
+        req.setHeader('Accept','application/json');
+        req.end(); //flushes the request
+
+        req.on('response', res => {
+
+            let payload = "";
+            
+            res.on('data', data => payload += data.toString('utf-8'));
+            res.on('end', () => resolve(JSON.parse(payload)));
+            
+        });
+
+        req.on('error', error => reject(error));
+        
+    });
+}
+
+async function reverse(word) {
+    return word.split('').reverse().join('');
+}
+
+
+async function printFruitsReversed() {
+    const fruits = await getFruits();
+    fruits.forEach(async (fruit) => {
+        const reversed = await reverse(fruit);
+        console.log(reversed);
+    });
+    
+}
+
+// alternatively:
+// getFruits().then(fruits => fruits.map(reverse))
+//     .then(promises => Promise.all(promises))
+//     .then(reversed  => reversed.forEach(word => console.log(word)));
+
+printFruitsReversed();
+
+let count = 0;
+const interval = setInterval(() => {
+    count++;
+    if(count > 5) {
+        clearInterval(interval);
+        return;
+    }
+    console.log("I'm still alive and kicking!!!");
+}, 1000);
+
+console.log("End of Program");
+```
+
+This is a powerful concept, because with a very small amount threads we can process thousands of requests and therefore we can scale more easily. Do more with less.
+
+This feature is one of the major selling points of [Node.js](https://nodejs.org/en/) and the reason why even using a single thread it can be used to develop backend applications.
+
+Likewise this is the reason for the proliferation of frameworks like [Netty](http://netty.io), [RxJava](https://github.com/ReactiveX/RxJava), [Reactive Streams Initiative](http://www.reactive-streams.org) and the [Project Reactor](https://projectreactor.io). They all are seeking to promote this type of optimization and programming model.
+
+There is also an interesting movement of new frameworks that leverage this powerful features and are trying to compete or complement one another. I'm talking of interesting projects like [Vert.x](http://vertx.io) and [Ratpack](https://ratpack.io). And I'm pretty sure there are many more out there for other languages.
 
 ### Java Reactive Types
 
@@ -446,7 +575,7 @@ TBD: CompletableFuture/RxJava(Observable/Single/Maybe)/Reactor(Mono/Flux).
 
 TBD
 
-### Using `curl` to Text Web Services
+### Using `curl` to Test Web Services
 
 The following are a few examples of how to use `curl` to test Web Services:
 
