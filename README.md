@@ -764,12 +764,24 @@ In Java `jshell` we can also do a:
 jshell> Runtime.getRuntime().availableProcessors();
 ``` 
 
-### Further Reference
+### Useful Tools
 
+* [JMeter](https://jmeter.apache.org/)
 * [WireMock](http://wiremock.org/docs/running-standalone/)
 * [Jq](https://stedolan.github.io/jq/)
 * [Xmllint](http://xmlsoft.org/xmllint.html)
-* [JMeter](https://jmeter.apache.org/)
+
+### Recommended Books
+
+* [JavaScript with Promises](http://my.safaribooksonline.com/book/programming/javascript/9781491930779)
+* [Exploring ES6](https://leanpub.com/exploring-es6)
+
+### Recommended Videos
+
+* [Help, I'm Stuck in the Event Loop](https://vimeo.com/96425312)
+
+### Further Reference
+
 * [Continuation Passing Style in JavaScript](http://matt.might.net/articles/by-example-continuation-passing-style/)
 * [Async/Await in JavaScript](http://matt.might.net/articles/by-example-continuation-passing-style/)
 * [Understanding Reactive Types](https://spring.io/blog/2016/04/19/understanding-reactive-types)
@@ -777,4 +789,3 @@ jshell> Runtime.getRuntime().availableProcessors();
 * [Parallel vs concurrent in Node.js](https://bytearcher.com/articles/parallel-vs-concurrent/)
 * [What's the difference between a continuation and a callback?](https://stackoverflow.com/q/14019341/697630)
 * [Callback Hell](http://callbackhell.com)
-* [Help, I'm Stuck in the Event Loop](https://vimeo.com/96425312)
