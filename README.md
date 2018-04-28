@@ -12,7 +12,7 @@
     + [Promises Beget Promises/Promise Chaining](#promises-beget-promisespromise-chaining)
     + [Async/Await vs Promises](#asyncawait-vs-promises)
     + [Error Handling with Async/Await](#error-handling-with-async-await)
-    + [Non-Blocking I/O](#non-blocking-i-o)
+    + [Non-Blocking I/O](#non-blocking-io)
     + [Java Reactive Types](#java-reactive-types)
     + [Other Reactive Types](#other-reactive-types)
     + [Using WireMock to Simulate HTTP Services](#using-wiremock-to-simulate-http-services)
