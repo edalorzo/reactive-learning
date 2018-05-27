@@ -1,28 +1,3 @@
-# Table of Contents
-
-- [Learning Reactive Programming](#learning-reactive-programming)
-  * [Asynchronous Programming](#asynchronous-programming)
-    + [Continuation Passing Style (CPS)](#continuation-passing-style-cps)
-    + [Synchronous vs Asynchronous Code](#synchronous-vs-asynchronous-code)
-    + [Error Handling in CPS](#error-handling-in-cps)
-    + [Callbacks Problems](#callbacks-problems)
-    + [Promises](#promises)
-    + [Promisify a CPS Function](#promisify-a-cps-function)
-    + [Error Handling with Promises](#error-handling-with-promises)
-    + [Promises Beget Promises/Promise Chaining](#promises-beget-promisespromise-chaining)
-    + [Async/Await vs Promises](#asyncawait-vs-promises)
-    + [Error Handling with Async/Await](#error-handling-with-async-await)
-    + [Non-Blocking I/O](#non-blocking-io)
-    + [Java Reactive Types](#java-reactive-types)
-    + [Other Reactive Types](#other-reactive-types)
-    + [Using WireMock to Simulate HTTP Services](#using-wiremock-to-simulate-http-services)
-    + [Using `curl` to Test Web Services](#using-curl-to-test-web-services)
-    + [Other Useful Command Line Tools and Shortcuts](#other-useful-command-line-tools-and-shortcuts)
-    + [Useful Tools](#useful-tools)
-    + [Recommended Books](#recommended-books)
-    + [Recommended Videos](#recommended-videos)
-    + [Further Reference](#further-reference)
-
 # Learning Reactive Programming
 
 This project is a sandbox that I use to learn and practice reactive programming concepts.
@@ -695,23 +670,11 @@ And our client could simply do:
 getDayOfWeek1(0).handle((day, error) -> {
     if(error != null) {
         return "The day is unknown";
+        
     }
     return day;
 }).thenAccept(System.out::println); //yiels "The days is unknown"
 ```
-
-### Other Reactive Types
-
-TBD
-
-* Netty uses promises.
-* Vert.x uses callbacks.
-* Ratpack uses promises.
-* Spring uses reactive streams.
-
-### Using WireMock to Simulate HTTP Services
-
-TBD
 
 ### Using `curl` to Test Web Services
 
@@ -775,6 +738,62 @@ Where `curl-format.txt` contains the following:
          time_total:  %{time_total}\n
 ```
 
+### Using WireMock to Simulate HTTP Services
+
+We can [donwload WireMock](http://wiremock.org) to simulate web service endpoints:
+
+```text
+java -jar wiremock-standalone-2.17.0.jar --port 4040 --container-threads=20
+```
+ 
+All we have to do is to provide endpoint definitions in the current working directory under the `mappings` directory:
+
+This is the `get-customer.json`:
+
+```json
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/customer/jules@verne.com",
+    "headers": {
+      "Accept": { "contains": "application/json" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "body": "{\"email\": \"jules@verne.com\", \"firstName\": \"Jules\", \"lastName\": \"Verne\"}"
+  }
+}
+```
+
+This. is the `get-order.json`:
+
+```json
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/orders/12345",
+    "headers": {
+      "Accept": { "contains": "application/json" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "fixedDelayMilliseconds": 5000,
+    "headers": { "Content-Type": "application/json" },
+    "body": "{\"number\": 12345, \"items\": [{\"product\": \"XYZ-123\", \"quantity\": 2, \"price\": 12.55}], \"customerEmail\": \"jules@verne.com\"}"
+  }
+}
+```
+
+Then we'll be able to get access to those two endpoints by doing:
+
+```text
+curl -s -H "Content-Type:application/json" -H "Accept:application/json" -X GET http://localhost:4040/orders/12345
+curl -s -H "Content-Type:application/json" -H "Accept:application/json" -X GET http://localhost:4040/customer/jules@verne.com
+```
+
 ### Other Useful Command Line Tools and Shortcuts
 
 You can discover the number of cores you have in your MacOs by doing
@@ -787,7 +806,7 @@ In Java `jshell` we can also do a:
 
 ```text
 jshell> Runtime.getRuntime().availableProcessors();
-``` 
+```
 
 ### Create SpringBoot Project
 
@@ -796,6 +815,20 @@ spring init --artifactId reactive-practice --packaging jar --package-name com.sn
 --build gradle --format project --name reactive-practice --extract \
 --dependencies="actuator,web,webflux,lombok,freemarker,aop"
 ```
+
+### Java Reactive Frameworks
+
+There's a proliferation of reactive frameworks these days, most of them seeking to take advantage of the power of asynchronous, non-blocking IO programming in one way or another.
+
+* [Project Reactor](https://projectreactor.io)
+* [RxJava](https://github.com/ReactiveX/RxJava)
+* [Vert.x](https://vertx.io)
+* [Ratpack](https://ratpack.io)
+* [Akka](https://akka.io)
+* [Netty](https://netty.io)
+
+Some of these frameworks (like RxJava and Reactor) seek to adhere to the [Reactive Streams](http://www.reactive-streams.org/) initiative. 
+As a matter of fact since Java 9, the core interfaces of the reactive streams initiative are also part of the [JDK 9](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html) under the `java.util.concurrent.Flow` base class.
 
 ### Useful Tools
 
@@ -808,10 +841,14 @@ spring init --artifactId reactive-practice --packaging jar --package-name com.sn
 
 * [JavaScript with Promises](http://my.safaribooksonline.com/book/programming/javascript/9781491930779)
 * [Exploring ES6](https://leanpub.com/exploring-es6)
+* [Reactive Programming with RxJava](https://www.safaribooksonline.com/library/view/reactive-programming-with/9781491931646/)
 
 ### Recommended Videos
 
 * [Help, I'm Stuck in the Event Loop](https://vimeo.com/96425312)
+* [YouTube: Introduction to Reactive Programming](https://www.youtube.com/watch?v=fec9nEIybp0)
+* [EggHeadIO: Introduction to Reactive Programming](https://egghead.io/courses/introduction-to-reactive-programming)
+* [CompletableFuture in Java 8, asynchronous processing done right](https://vimeo.com/131394616)
 
 ### Further Reference
 

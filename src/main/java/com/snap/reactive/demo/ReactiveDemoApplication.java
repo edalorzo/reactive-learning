@@ -38,6 +38,7 @@ public class ReactiveDemoApplication {
         @Bean
         AsyncRestTemplate asyncRestTemplate() {
             Netty4ClientHttpRequestFactory requestFactory = new Netty4ClientHttpRequestFactory(new NioEventLoopGroup(1));
+            //return new AsyncRestTemplate(taskExecutor());
             return new AsyncRestTemplate(requestFactory);
         }
 
