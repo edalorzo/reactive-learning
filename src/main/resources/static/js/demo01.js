@@ -1,7 +1,7 @@
 
 // direct style
 function id0(id) {
-    return id;
+    retun id;
 }
 
 //continuation passing style

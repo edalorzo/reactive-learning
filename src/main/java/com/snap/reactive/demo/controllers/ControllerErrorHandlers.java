@@ -1,10 +1,9 @@
 package com.snap.reactive.demo.controllers;
 
-import com.snap.reactive.demo.models.Error;
-import com.snap.reactive.demo.services.GetOrderSummaryException;
+import com.snap.reactive.demo.api.GetOrderSummaryException;
+import com.snap.reactive.demo.api.models.Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.classify.BinaryExceptionClassifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

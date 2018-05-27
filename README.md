@@ -789,6 +789,14 @@ In Java `jshell` we can also do a:
 jshell> Runtime.getRuntime().availableProcessors();
 ``` 
 
+### Create SpringBoot Project
+
+```
+spring init --artifactId reactive-practice --packaging jar --package-name com.snap.reactive \
+--build gradle --format project --name reactive-practice --extract \
+--dependencies="actuator,web,webflux,lombok,freemarker,aop"
+```
+
 ### Useful Tools
 
 * [JMeter](https://jmeter.apache.org/)
