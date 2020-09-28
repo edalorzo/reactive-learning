@@ -298,7 +298,7 @@ It yields:
 
 ```
 $> end of program
-$> racecar
+$> true
 ```
 
 It seems that `isPalindrome` function will continue to work just fine without any modifications, it is just that now, 
@@ -317,3 +317,117 @@ So, the key tenets for me, so far, are:
 * A function written in CPS is not by default asynchronous.
 * A function written in CPS is compatible with syncrhonous and asynchronous functions.
 * A function written in CPS causes all its callers to be written in CPS.
+
+-----------------------------------------------------------------------------------------------------------------
+-> Callbacks Problems: Nested Call Stack <-
+=====================================================
+
+**Nested call stack**: if the code is synchronous, and the language does not support 
+tail call optimizations, then every continuation adds to the call stack leading to 
+a potential stack overflow error.
+
+For example, Node.js v9.11.1 (the version I'm using for these examples) does not 
+support tail call optimizations. So even the following function written in 
+tail recursive way causes a stack overflow error:
+
+```javascript
+function fact(n, ret) {
+    function fact_tail_rec(n, a, ret) {
+        if(n == 0) {
+            ret (a);
+        } else {
+            multiply(n, a, m => fact_tail_rec(n-1, m, ret));
+        }
+    }
+    fact_tail_rec(n, 1, ret);
+}
+
+fact(15000, console.log); //stackoverflow
+```
+
+-----------------------------------------------------------------------------------------------------------------
+-> How to Fix Stackoverflow Errors? <-
+=====================================================
+
+A typically solution to this problem would be to actually make the function work 
+asynchronously, that way the it would complete immediately and relinquish the call stack. 
+For example, we could make the function above become asynchronous my making the `multiply` 
+function asynchronous:
+
+```javascript
+function multiply(x, y, ret) {
+    setTimeout(() => ret (x * y));
+}
+```
+
+The invocation to `fact(15000, console.log)` would take a while to complete, 
+and would yield an `Infinity` result since the result is beyond the supported 
+arithmetic boundaries of JavaScript, but it would not cause a stackoverflow.
+
+-----------------------------------------------------------------------------------------------------------------
+-> Callback Hell <-
+=====================================================
+
+**Callback hell**: it is a real pain to write nested functions. The code becomes 
+harder to read, to follow, to reason about and to maintain.
+
+```javascript
+function multiply(x, y, ret) {
+    ret (x * y);
+}
+
+function add(x, y, ret) {
+    ret (x + y);
+}
+
+function square(x, ret) {
+    multiply(x, x, ret);
+}
+
+function pythagoras(x, y, ret) {
+    square(x, function (x_squared) {
+        square(y, function (y_squared) {
+            add(x_squared, y_squared, ret);
+        });
+    });
+}
+
+pythagoras(3, 4, console.log);
+```
+
+-----------------------------------------------------------------------------------------------------------------
+-> How to Fix Callback Hell? <-
+=====================================================
+
+There are a [few ways to organize](http://callbackhell.com) our code when using CPS 
+such that we keep callback hell under control and there are interesting libraries 
+(like [async.js](https://caolan.github.io/async/)) that can help us write better code, 
+but in general there's not easy way to dodge this bullet. 
+
+Alternatively, these days it is customary to replace callbacks with **promises**.
+
+-----------------------------------------------------------------------------------------------------------------
+-> Promises <-
+=====================================================
+
+An alternative to deal with callback hell is to replace CPS with a direct style that 
+returns a promise. 
+
+A promise is just an object that is returned by the function instead of the actual result. 
+The promise has three possible states:
+
+* Before the result is ready, the Promise is _pending_.
+* If a result is available, the Promise is _fulfilled_.
+* If an error happened, the Promise is _rejected_.
+
+We can register callbacks to react to promise state changes. The callback can provide 
+the result of the function when the promise is resolved or provides an error when 
+the promise has been rejected.
+
+```javascript
+function reverse(word) {
+    return new Promise(
+        resolve => resolve(word.split('').reverse().join(''))
+    );
+}
+```
