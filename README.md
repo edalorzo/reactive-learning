@@ -8,7 +8,7 @@ I will start by some introduction to asynchronous programming concepts that I fo
 
 ### Continuation Passing Style (CPS)
 
-Perhaps the best explanation I have found so far on this topic is from [@mattmight's](http://matt.might.net/articles/by-example-continuation-passing-style/) blog.
+Perhaps the best explanation I have found so far on this topic is from [@mattmight's](http://matt.might.net/articles/by-example-continuation-passing-style/) blog and [Continuations made simple](https://www.ps.uni-saarland.de/~duchier/python/continuations.html) by Denys Duchier.
 
 I'm going to reproduce some of his examples here to reiterate my understanding while I try to build my own knowledge on top of his ideas and examples:
 
