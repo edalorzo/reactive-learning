@@ -1,6 +1,78 @@
-# Learning Reactive Programming
+# Fundamentals of Asynchronous Programming
 
-This project is a sandbox that I use to learn and practice reactive programming concepts.
+This project is a sandbox that I use to learn and practice asynchronous programming concepts.
+
+## Closures
+
+TBD
+
+## Thunks and Lazy Evaluation
+
+TBD
+
+
+## Evaluation Order
+
+**Call-by-value**
+**Call-by-name**
+**Call-by-reference**
+
+## Tail Recursion
+
+### Example 1: SML
+
+Consider the following summation function, implemented in the functionl language SML:
+
+```sml
+fun sum0(n) = 
+    if n = 0 then 0 
+    else n + sum0(n-1);
+```
+
+If we call this function with `n=10000` we can see how it already takes a long time to calculate, however it does not causes a stack overflow, perhaps a demonstration of how functional languages are highly optimized for recursion.
+
+If we define its tail-recursive counterpart:
+
+```sml
+fun sum1(n, ans) = 
+    if n = 0 then ans 
+    else sum1(n - 1, n + ans);
+```    
+
+Calculating the `sum1(10000)` and even bigger number presents no problem, it resolves almost instantly. This shows how the compiler has applied the tail-call optimization to the function written in a tail-recursive form.
+
+### Example 2: Clojure
+
+Let's look at a similar example in a language without automatic tail-call optimizations. Consider the definition of the same two functions in Clojure, a Lisp that runs on top of the JVM:
+
+```clojure
+(defn sum0 [n] 
+    (if (zero? n) 
+        n 
+        (+ n (sum0 (dec n)))))
+```
+
+This function stack-overflows for `n=10000`.
+
+How about if we write it in tail-recursive form?
+
+```clojure
+(defn sum1 [n,ans] 
+    (if (zero? n) 
+        ans 
+        (sum1 (dec n) (+ n ans))))
+```
+
+Curiously, this function still stack-overflows for `n=10000`. This reveals that the Java compiler does aplly tail-call optimizations to the functions. Since Clojure is a functional language it is expected that code will usually be written in a recursive form, that's why the language offers an alternative to force the Clojure compiler to apply tail-call optimizations.
+
+```clojure
+(defn sum2 [n,ans] 
+    (if (zero? n) 
+        ans 
+        (recur (dec n) (+ n ans))))
+```
+
+In this case the `recur` keyword tells the Clojure compiler to implement this function in an interative way under the hood. This last implementation has no problem calling `sum2(10000)`.
 
 ## Asynchronous Programming
 
