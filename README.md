@@ -15,9 +15,13 @@ TBD
 
 ### Evaluation Order
 
-**Call-by-value**
-**Call-by-name**
-**Call-by-reference**
+* **Strict evaluation**
+* **Non-strict evaluation**
+* **Applicative order**
+* **Normal order**
+* **Call-by-value**
+* **Call-by-name**
+* **Call-by-need**
 
 ### Tail Recursion
 
