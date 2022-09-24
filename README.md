@@ -2,24 +2,26 @@
 
 This project is a sandbox that I use to learn and practice asynchronous programming concepts.
 
-## Closures
+## Fundamentals Overview
+
+### Closures
 
 TBD
 
-## Thunks and Lazy Evaluation
+### Thunks and Lazy Evaluation
 
 TBD
 
 
-## Evaluation Order
+### Evaluation Order
 
 **Call-by-value**
 **Call-by-name**
 **Call-by-reference**
 
-## Tail Recursion
+### Tail Recursion
 
-### Example 1: SML
+#### Example 1: SML
 
 Consider the following summation function, implemented in the functionl language SML:
 
@@ -41,7 +43,7 @@ fun sum1(n, ans) =
 
 Calculating the `sum1(10000)` and even bigger number presents no problem, it resolves almost instantly. This shows how the compiler has applied the tail-call optimization to the function written in a tail-recursive form.
 
-### Example 2: Clojure
+#### Example 2: Clojure
 
 Let's look at a similar example in a language without automatic tail-call optimizations. Consider the definition of the same two functions in Clojure, a Lisp that runs on top of the JVM:
 
