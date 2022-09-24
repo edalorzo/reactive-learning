@@ -21,9 +21,25 @@ TBD
 
 ### Tail Recursion
 
+#### Example 0: Java
+
+Consider the following summation function implemented in an iterative manner:
+
+```java
+public static int sum(int n) {
+  int ans = 0;
+  for(int i = 0; i <= n; i++) {
+     ans += i
+  }
+  return ans;
+}
+```
+
+Calculating the `sum1(10000)` and even bigger number presents no problem, it resolves almost instantly.
+
 #### Example 1: SML
 
-Consider the following summation function, implemented in the functionl language SML:
+Now consider the following implementation of the same function, implemented in the functionl language SML, in a recursive manner:
 
 ```sml
 fun sum0(n) = 
@@ -65,7 +81,7 @@ How about if we write it in tail-recursive form?
         (sum1 (dec n) (+ n ans))))
 ```
 
-Curiously, this function still stack-overflows for `n=10000`. This reveals that the Java compiler does aplly tail-call optimizations to the functions. Since Clojure is a functional language it is expected that code will usually be written in a recursive form, that's why the language offers an alternative to force the Clojure compiler to apply tail-call optimizations.
+Curiously, this function still stack-overflows for `n=10000`. This reveals that the Java compiler does not apply tail-call optimizations to the functions. Since Clojure is a functional language it is expected that code will usually be written in a recursive form, that's why the language offers a manual alternative to force the Clojure compiler to apply tail-call optimizations to this function.
 
 ```clojure
 (defn sum2 [n,ans] 
@@ -74,7 +90,7 @@ Curiously, this function still stack-overflows for `n=10000`. This reveals that 
         (recur (dec n) (+ n ans))))
 ```
 
-In this case the `recur` keyword tells the Clojure compiler to implement this function in an interative way under the hood. This last implementation has no problem calling `sum2(10000)`.
+In this case the `recur` keyword tells the Clojure compiler to implement this function in an interative way under the hood in the bytecodes binary. This last implementation has no problem calling `sum2(10000)` and it is equivalent to writing a for loop in Java.
 
 ## Asynchronous Programming
 
