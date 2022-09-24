@@ -35,7 +35,7 @@ public static int sum(int n) {
 }
 ```
 
-Calculating the `sum1(10000)` and even bigger number presents no problem, it resolves almost instantly.
+Calculating the `sum(10000)` and even bigger number presents no problem, it resolves almost instantly.
 
 #### Example 1: SML
 
